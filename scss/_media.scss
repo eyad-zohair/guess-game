@@ -2,5 +2,36 @@
     .guess-game {
         flex-direction: column-reverse;
         align-items: center;
+
+        .game-area {
+            text-align: center;
+
+            .inputs {
+                margin-top: 10px;
+
+                >div {
+
+                    span {
+                        font-size: 18px;
+                    }
+
+                    input {
+                        width: 40px;
+                        height: 40px;
+                        font-size: 30px;
+                    }
+                }
+            }
+        }
+
+        .key-colors {
+
+            .key-color {
+
+                .key-text {
+                    font-size: 16px;
+                }
+            }
+        }
     }
 }
