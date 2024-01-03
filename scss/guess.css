@@ -24,6 +24,13 @@ h1 {
   justify-content: space-between;
   padding: 20px;
 }
+.guess-game .game-area.over {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+}
 .guess-game .game-area .inputs > div {
   margin-bottom: 20px;
   display: flex;
@@ -68,6 +75,37 @@ h1 {
   border: #27303f;
   color: white;
 }
+.guess-game .game-area .control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+  gap: 10px;
+}
+.guess-game .game-area .control .check {
+  background-color: #f44336;
+  flex: 1;
+}
+.guess-game .game-area .control .hint {
+  background-color: #009688;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.guess-game .game-area .control button {
+  border: none;
+  font-size: 25px;
+  padding: 15px 20px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+.guess-game .game-area .control button:disabled {
+  background-color: black;
+  opacity: 0.4;
+  cursor: no-drop;
+}
 .guess-game .key-colors .key-color {
   display: flex;
   align-items: center;
@@ -92,6 +130,16 @@ h1 {
 .guess-game .key-colors .key-color .key-text {
   font-size: 20px;
   font-weight: bold;
+}
+.guess-game .key-colors button {
+  width: 100%;
+  background-color: #f44336;
+  border: none;
+  height: 60px;
+  font-size: 40px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
 }
 
 footer {
@@ -127,4 +175,70 @@ footer {
   .guess-game .key-colors .key-color .key-text {
     font-size: 16px;
   }
+}
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.4);
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.overlay .final-div {
+  background-color: white;
+  padding: 30px;
+  border-radius: 6px;
+  min-width: 35%;
+  text-align: center;
+  position: relative;
+}
+.overlay .final-div h2 {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.overlay .final-div h2.won {
+  color: #009688;
+}
+.overlay .final-div h2.lose {
+  color: #f44336;
+}
+.overlay .final-div button {
+  width: 100%;
+  height: 45px;
+  border-radius: 6px;
+  border: none;
+  background-color: #009688;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.overlay .final-div p {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  margin: 0;
+  background-color: #f44336;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.overlay .final-div h3 {
+  font-size: 25px;
+  margin: 0 0 20px 0;
+}
+.overlay .final-div h3 span {
+  color: #f44336;
 }/*# sourceMappingURL=guess.css.map */
