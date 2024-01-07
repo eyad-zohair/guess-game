@@ -8,18 +8,28 @@ document.querySelector("footer").innerHTML = `${gameName} Game Created By 3eyas`
 let numberOfTries = 6;
 let numberOfLetters = 6;
 let currentTry = 1;
+let numberOfHints = 2;
 
 // MANAGE WORDS
 let wordToGuess = ""
 const words = ["Create", "Update", "Delete", "Master", "Branch", "Mainly", "School", "Change"]
 wordToGuess = words[Math.floor(Math.random() * words.length)].toLocaleLowerCase()
 
+// manage hint 
+document.querySelector(".hint span").innerHTML = numberOfHints;
+const getHintButton = document.querySelector(".hint");
+getHintButton.addEventListener("click", getHint)
+
 window.onload = () => {
     generateInput()
 }
 
+// select guess button
 const guessButton = document.querySelector(".check")
 guessButton.addEventListener("click", handleGuesses)
+
+// handling backspace on the input
+document.addEventListener("keydown", handleBackSpace)
 
 function generateInput() {
     const inputsContainer = document.querySelector(".inputs");
@@ -33,6 +43,7 @@ function generateInput() {
         for (let j = 1; j <= numberOfLetters; j++) {
             const input = document.createElement("input");
             input.type = "text";
+            input.setAttribute("data-number", `input-${j}`)
             input.id = `guess-${i}-letter-${j}`;
             input.setAttribute("maxlength", "1")
             tryDiv.appendChild(input);
@@ -58,7 +69,7 @@ function generateInput() {
                 if (nextInput) nextInput.focus()
             }
         })
-        input.addEventListener("keyup", (event) => {
+        input.addEventListener("keydown", (event) => {
             const currentIndex = Array.from(inputs).indexOf(event.target);
             if (event.key === "ArrowRight") {
                 const nextInput = currentIndex + 1;
@@ -68,17 +79,15 @@ function generateInput() {
                 const prevInput = currentIndex - 1;
                 if (prevInput >= 0) inputs[prevInput].focus();
             }
-            if (event.keyCode === 8) {
-                input.value = ""
-                const prevInput = currentIndex - 1;
-                if (prevInput >= 0) inputs[prevInput].focus();
+            if (event.key === "Enter") {
+                guessButton.click()
             }
         });
     })
 }
 
 function handleGuesses() {
-    let sucsessGuess = false;
+    let sucsessGuess = true;
     console.log(wordToGuess)
     for (let i = 1; i <= numberOfLetters; i++) {
         const inputField = document.querySelector(`#guess-${currentTry}-letter-${i}`)
@@ -88,7 +97,6 @@ function handleGuesses() {
         if (letter === actualLetter) {
             // letter is correct and in place
             inputField.classList.add("yes-in-place")
-            sucsessGuess = true;
         } else if (wordToGuess.includes(letter) && letter !== "") {
             // letter is correct and not in place
             inputField.classList.add("not-in-place")
@@ -104,6 +112,11 @@ function handleGuesses() {
     if (sucsessGuess) {
         createBobab("You Won", "won")
     } else {
+        // GET TRUE LETTERS
+        let allWords = Array.from(document.querySelector(`.try-${currentTry}`).children)
+        let trueWords = []
+        trueWords = allWords.filter(word => word.classList.contains("yes-in-place"));
+
         document.querySelector(`.try-${currentTry}`).classList.add("disabled-input")
         const currentTryInputs = document.querySelectorAll(`.try-${currentTry} input`)
         currentTryInputs.forEach((input) => (input.disabled = true))
@@ -114,17 +127,70 @@ function handleGuesses() {
         nextTryInputs.forEach((input, index) => {
             input.disabled = false
         })
+        // PUT TRUE LETTERS TO NEXT INPUT
+        let index = 0
+        if (trueWords.length > 0) {
+            for (let i = 1; i <= nextTryInputs.length; i++) {
+                let input = document.querySelector(`#guess-${currentTry}-letter-${i}`)
+                let attr = trueWords[index].getAttribute("data-number")
+                if (input.getAttribute("data-number") === attr) {
+                    input.value = trueWords[index].value
+                    input.classList.add("yes-in-place")
+                    if (index < trueWords.length - 1) {
+                        index++
+                    }
+                }
+            }
+        }
 
         let el = document.querySelector(`.try-${currentTry}`)
         if (el) {
             document.querySelector(`.try-${currentTry}`).classList.remove("disabled-input")
-            el.children[1].focus()
+            let place = document.querySelectorAll(`.try-${currentTry} input:not(.yes-in-place)`)
+            place[0].focus()
         } else {
             createBobab("You Lose", "lose")
         }
     }
 }
 
+function getHint() {
+    if (numberOfHints > 0) {
+        numberOfHints--;
+        document.querySelector(".hint span").innerHTML = numberOfHints;
+    }
+    if (numberOfHints === 0) {
+        getHintButton.disabled = true;
+    }
+
+    const enabledInputs = document.querySelectorAll("input:not([disabled])")
+    const emptyEnabledInputs = Array.from(enabledInputs).filter((input) => input.value === "")
+
+    if (emptyEnabledInputs.length > 0) {
+        const randomIndex = Math.floor(Math.random() * emptyEnabledInputs.length);
+        const randomInput = emptyEnabledInputs[randomIndex];
+        const indexToFill = Array.from(enabledInputs).indexOf(randomInput)
+        if (indexToFill !== -1) {
+            randomInput.value = wordToGuess[indexToFill].toLowerCase()
+        }
+    } else {
+        numberOfHints++
+        document.querySelector(".hint span").innerHTML = numberOfHints;
+    }
+}
+
+function handleBackSpace(event) {
+    if (event.key === "Backspace") {
+        let inputs = document.querySelectorAll("input:not([disabled])")
+        const currentIndex = Array.from(inputs).indexOf(document.activeElement)
+        if (currentIndex > 0) {
+            const currentInput = inputs[currentIndex];
+            const prevInput = inputs[currentIndex - 1];
+            currentInput.value = "";
+            prevInput.focus()
+        }
+    }
+}
 function createBobab(useressage, chosenClass) {
     // CREATE ELEMENT
     let overlay = document.createElement("div")
